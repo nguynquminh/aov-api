@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AOV API Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        hacker: {
+                            100: '#e6f3e6',
+                            200: '#c0e0c0',
+                            300: '#97cc97',
+                            400: '#6bb86b',
+                            500: '#4CAF50',
+                            600: '#3d8b40',
+                            700: '#2e6b31',
+                            800: '#1f4b21',
+                            900: '#0f2b11',
+                        }
+                    },
+                    fontFamily: {
+                        'mono': ['Courier New', 'monospace']
+                    }
+                }
+            }
+        }
+
+    </script>
+    <style>
+        body {
+            background-color: #121212;
+            color: #4CAF50;
+            font-family: 'Courier New', monospace;
+        }
+
+        .terminal {
+            background-color: rgba(0, 0, 0, 0.85);
+            border: 1px solid #4CAF50;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .terminal-header {
+            border-bottom: 1px solid #4CAF50;
+        }
+
+        .terminal-body {
+            height: 400px;
+            overflow-y: auto;
+        }
+
+        .command-line {
+            display: flex;
+            align-items: center;
+        }
+
+        .prompt {
+            color: #4CAF50;
+            margin-right: 10px;
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .typewriter {
+            overflow: hidden;
+            border-right: .15em solid #4CAF50;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .15em;
+            animation:
+                typing 3.5s steps(40, end),
+                blink-caret .75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from {
+                width: 0
+            }
+
+            to {
+                width: 100%
+            }
+        }
+
+        @keyframes blink-caret {
+
+            from,
+            to {
+                border-color: transparent
+            }
+
+            50% {
+                border-color: #4CAF50;
+            }
+        }
+
+        .glow {
+            text-shadow: 0 0 5px #4CAF50;
+        }
+
+        .scrollbar-hacker::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scrollbar-hacker::-webkit-scrollbar-track {
+            background: #121212;
+        }
+
+        .scrollbar-hacker::-webkit-scrollbar-thumb {
+            background-color: #4CAF50;
+            border-radius: 20px;
+        }
+
+        .endpoint-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .endpoint-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
+        }
+
+    </style>
+</head>
+
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="py-8">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 glow">
+                <span class="text-hacker-400">$</span> AOV API DOCUMENTATION <span class="text-hacker-400">_</span>
+            </h1>
+            <p class="text-xl text-hacker-400 max-w-2xl mx-auto font-mono">
+                > Accessing system endpoints... [OK]
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Terminal Demo -->
+        <div class="terminal mb-12">
+            <div class="terminal-header p-3 flex items-center">
+                <div class="flex space-x-2 mr-4">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+                <div class="text-hacker-400 font-mono text-sm">
+                    hacker@terminal:~/api-docs$
+                </div>
+            </div>
+            <div class="terminal-body p-4 font-mono text-sm scrollbar-hacker">
+                <div class="command-line mb-2">
+                    <span class="prompt">$</span>
+                    <span class="typewriter">curl http://localhost:3636/api/heroes</span>
+                </div>
+                <pre class="text-hacker-300 mb-4">{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "Cyber Ninja",
+      "class": "Stealth",
+      "level": 42,
+      "skills": ["Phantom Strike", "Data Drain", "Firewall Leap"]
+    },
+    {
+      "id": 2,
+      "name": "Binary Mage",
+      "class": "Caster", 
+      "level": 38,
+      "skills": ["Code Storm", "Hex Injection", "Stack Overflow"]
+    }
+  ]
+}</pre>
+
+                <div class="command-line mb-2">
+                    <span class="prompt">$</span>
+                    <span>curl http://localhost:3636/api/badges/search?q=thánh%20thuẫn</span>
+                </div>
+                <pre class="text-hacker-300 mb-4">{
+  "success": true,
+  "search_type": "skill",
+  "count": 1,
+  "data": [
+    {
+      "name": "Thánh thuẫn",
+      "type": "Phòng ngự",
+      "image": "https://lienquan.garena.vn/wp-content/uploads/2024/05/mowen_20303.png",
+      "description": "Sau khi chịu sát thương sẽ nhận được lá chắn và hút máu phép.",
+      "badge_name": "Tháp quang minh",
+      "group_id": "3"
+    }
+  ],
+  "author": "Nguyễn Quang Minh"
+}</pre>
+
+                <div class="command-line">
+                    <span class="prompt">$</span>
+                    <span class="cursor">_</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Endpoints Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Badges Section -->
+            <div class="endpoint-card bg-black p-6 rounded border-l-4 border-hacker-500">
+                <div class="flex items-center mb-4">
+                    <div class="bg-hacker-900 text-hacker-400 p-2 rounded mr-4">
+                        <i class="fas fa-id-badge"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-hacker-400 font-mono">BADGES</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-hacker-900 rounded p-3">
+                        <div class="flex items-center">
+                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
+                            <span class="font-mono text-hacker-300">/api/badges</span>
+                        </div>
+                        <p class="mt-2 text-hacker-400 text-sm">Retrieve all badge entities</p>
+                    </div>
+
+                    <div class="bg-hacker-900 rounded p-3">
+                        <div class="flex items-center">
+                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
+                            <span class="font-mono text-hacker-300">/api/badges/search?q={term}</span>
+                        </div>
+                        <p class="mt-2 text-hacker-400 text-sm">Search badges by query term</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Heroes Section -->
+            <div class="endpoint-card bg-black p-6 rounded border-l-4 border-hacker-500">
+                <div class="flex items-center mb-4">
+                    <div class="bg-hacker-900 text-hacker-400 p-2 rounded mr-4">
+                        <i class="fas fa-user-ninja"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-hacker-400 font-mono">HEROES</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-hacker-900 rounded p-3">
+                        <div class="flex items-center">
+                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
+                            <span class="font-mono text-hacker-300">/api/heroes</span>
+                        </div>
+                        <p class="mt-2 text-hacker-400 text-sm">Access all hero characters</p>
+                    </div>
+
+                    <div class="bg-hacker-900 rounded p-3">
+                        <div class="flex items-center">
+                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
+                            <span class="font-mono text-hacker-300">/api/heroes/search?q={term}</span>
+                        </div>
+                        <p class="mt-2 text-hacker-400 text-sm">Find heroes by search term</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Equipments Section -->
+            <div class="endpoint-card bg-black p-6 rounded border-l-4 border-hacker-500">
+                <div class="flex items-center mb-4">
+                    <div class="bg-hacker-900 text-hacker-400 p-2 rounded mr-4">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-hacker-400 font-mono">EQUIPMENT</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-hacker-900 rounded p-3">
+                        <div class="flex items-center">
+                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
+                            <span class="font-mono text-hacker-300">/api/equipments</span>
+                        </div>
+                        <p class="mt-2 text-hacker-400 text-sm">List all equipment items</p>
+                    </div>
+
+                    <div class="bg-hacker-900 rounded p-3">
+                        <div class="flex items-center">
+                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
+                            <span class="font-mono text-hacker-300">/api/equipments/search?q={term}</span>
+                        </div>
+                        <p class="mt-2 text-hacker-400 text-sm">Search equipment by name</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Runes Section -->
+            <div class="endpoint-card bg-black p-6 rounded border-l-4 border-hacker-500">
+                <div class="flex items-center mb-4">
+                    <div class="bg-hacker-900 text-hacker-400 p-2 rounded mr-4">
+                        <i class="fas fa-dice-d20"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-hacker-400 font-mono">RUNES</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-hacker-900 rounded p-3">
+                        <div class="flex items-center">
+                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
+                            <span class="font-mono text-hacker-300">/api/runes</span>
+                        </div>
+                        <p class="mt-2 text-hacker-400 text-sm">Get all rune objects</p>
+                    </div>
+
+                    <div class="bg-hacker-900 rounded p-3">
+                        <div class="flex items-center">
+                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
+                            <span class="font-mono text-hacker-300">/api/runes/search?q={term}</span>
+                        </div>
+                        <p class="mt-2 text-hacker-400 text-sm">Query runes by keyword</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spells Section -->
+            <div class="endpoint-card bg-black p-6 rounded border-l-4 border-hacker-500">
+                <div class="flex items-center mb-4">
+                    <div class="bg-hacker-900 text-hacker-400 p-2 rounded mr-4">
+                        <i class="fas fa-hat-wizard"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-hacker-400 font-mono">SPELLS</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-hacker-900 rounded p-3">
+                        <div class="flex items-center">
+                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
+                            <span class="font-mono text-hacker-300">/api/spells</span>
+                        </div>
+                        <p class="mt-2 text-hacker-400 text-sm">Retrieve all spells</p>
+                    </div>
+
+                    <div class="bg-hacker-900 rounded p-3">
+                        <div class="flex items-center">
+                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
+                            <span class="font-mono text-hacker-300">/api/spells/search?q={term}</span>
+                        </div>
+                        <p class="mt-2 text-hacker-400 text-sm">Search spells by term</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Status -->
+            <div class="endpoint-card bg-black p-6 rounded border-l-4 border-hacker-500">
+                <div class="flex items-center mb-4">
+                    <div class="bg-hacker-900 text-hacker-400 p-2 rounded mr-4">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-hacker-400 font-mono">SYSTEM STATUS</h2>
+                </div>
+
+                <div class="space-y-4" id="system-status">
+                    <!-- Nội dung sẽ được cập nhật bằng JavaScript -->
+                    <div class="bg-hacker-900 rounded p-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-hacker-400 text-sm font-mono">API VERSION</span>
+                            <span class="font-mono text-hacker-300" id="api-version">v1.0.3</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-hacker-900 rounded p-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-hacker-400 text-sm font-mono">UPTIME</span>
+                            <span class="font-mono text-hacker-300" id="uptime">Loading...</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-hacker-900 rounded p-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-hacker-400 text-sm font-mono">RESPONSE TIME</span>
+                            <span class="font-mono text-hacker-300" id="response-time">~120ms</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-hacker-900 rounded p-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-hacker-400 text-sm font-mono">REQUESTS TODAY</span>
+                            <span class="font-mono text-hacker-300" id="request-count">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black py-8 mt-12 border-t border-hacker-800">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h3 class="text-xl font-bold flex items-center font-mono">
+                        <span class="text-hacker-400 mr-2">$</span> HACKER API <span class="text-hacker-400 ml-2">_</span>
+                    </h3>
+                    <p class="text-hacker-600 text-sm font-mono">> System documentation v1.0.3</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="https://github.com/nguynquminh" class="text-xl text-hacker-600 hover:text-hacker-400">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="text-xl text-hacker-600 hover:text-hacker-400">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="#" class="text-xl text-hacker-600 hover:text-hacker-400">
+                        <i class="fas fa-terminal"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="mt-8 text-center text-hacker-600 text-xs font-mono">
+                <p>> Copyright © 2023 Hacker API. All systems operational. [OK]</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Terminal typing effect
+        const commands = [
+            "curl http://localhost:3636/api/heroes/42",
+            "curl -X GET http://localhost:3636/api/spells/search?q=fire",
+            "fetch('/api/equipments').then(res => res.json())",
+            "npm install hacker-api-client",
+            "docker-compose up --build"
+        ];
+
+        let currentCommand = 0;
+        const terminalInput = document.querySelector('.terminal-body .command-line:last-child span:not(.prompt)');
+
+        function typeNextCommand() {
+            terminalInput.textContent = commands[currentCommand];
+            terminalInput.classList.add('typewriter');
+
+            setTimeout(() => {
+                terminalInput.classList.remove('typewriter');
+                terminalInput.textContent = '_';
+                currentCommand = (currentCommand + 1) % commands.length;
+                setTimeout(typeNextCommand, 2000);
+            }, 3500);
+        }
+
+        // Start the typing animation
+        setTimeout(typeNextCommand, 2000);
+
+        // Add blinking cursor
+        setInterval(() => {
+            if (terminalInput.textContent === '_') {
+                terminalInput.textContent = '';
+            } else {
+                terminalInput.textContent = '_';
+            }
+        }, 500);
+
+        // Make terminal draggable
+        const terminal = document.querySelector('.terminal');
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        terminal.addEventListener('mousedown', (e) => {
+            if (e.target.tagName === 'SPAN' || e.target.tagName === 'PRE') return;
+
+            isDragging = true;
+            offsetX = e.clientX - terminal.getBoundingClientRect().left;
+            offsetY = e.clientY - terminal.getBoundingClientRect().top;
+            terminal.style.position = 'absolute';
+            terminal.style.cursor = 'grabbing';
+            document.body.style.userSelect = 'none';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            terminal.style.left = (e.clientX - offsetX) + 'px';
+            terminal.style.top = (e.clientY - offsetY) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            terminal.style.cursor = 'default';
+            document.body.style.userSelect = '';
+        });
+
+        async function fetchSystemStatus() {
+            try {
+                const response = await fetch('/api/system-status');
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('api-version').textContent = data.data.version;
+                    document.getElementById('uptime').textContent = data.data.uptime;
+                    document.getElementById('request-count').textContent = data.data.requestCount.toLocaleString();
+
+                    // Test response time
+                    const start = performance.now();
+                    await fetch('/api/system-status?ping=1');
+                    const duration = Math.round(performance.now() - start);
+                    document.getElementById('response-time').textContent = `~${duration}ms`;
+                }
+            } catch (error) {
+                console.error('Error fetching system status:', error);
+            }
+        }
+
+        // Cập nhật mỗi giây
+        fetchSystemStatus();
+        setInterval(fetchSystemStatus, 1000);
+
+    </script>
+</body>
+
+</html>
+<!-- End of HTML Document -->
