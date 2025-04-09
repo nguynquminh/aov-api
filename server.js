@@ -414,6 +414,14 @@ setInterval(() => {
     requestCount = 0;
 }, 24 * 60 * 60 * 1000);
 
+app.get('/api', (req, res) => {
+  res.json({
+    ...API_DOCS,
+    status: 'running',
+    serverTime: new Date().toISOString()
+  });
+});
+
 app.get('/', (req, res) => {
     res.redirect('/index.html');
 });
