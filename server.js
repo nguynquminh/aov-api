@@ -465,7 +465,7 @@ app.get('/api/gamemodes', (req, res) => {
     }
 });
 
-app.get('/api/gamemode/search', (req, res) => {
+app.get('/api/gamemodes/search', (req, res) => {
     try {
         const searchTerm = req.query.q;
         if (!searchTerm) {
