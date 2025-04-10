@@ -8,394 +8,228 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
+<body>
+    <div class="cursor-heart" id="cursorHeart"></div>
+    <div class="floating-hearts" id="floatingHearts"></div>
 
-<body class="min-h-screen">
-    <!-- Header -->
-    <header class="py-8">
-        <div class="container mx-auto px-4 text-center">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4 glow">
-                <span class="text-hacker-400">$</span> AOV API DOCUMENTATION <span class="text-hacker-400">_</span>
-            </h1>
-            <p class="text-xl text-hacker-400 max-w-2xl mx-auto font-mono">
-                > Accessing system endpoints... [OK]
-            </p>
+    <header>
+        <div class="header-content">
+            <h1>Liên Quân Mobile API</h1>
+            <div class="version-badge">Phiên bản 1.0.0</div>
+            <p class="subtitle">API cung cấp dữ liệu về Liên Quân Mobile</p>
+            
+            <div class="api-stats">
+                <div class="stat-card">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Danh mục dữ liệu</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">60</div>
+                    <div class="stat-label">Request/phút</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">REST</div>
+                    <div class="stat-label">Kiểu API</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">JSON</div>
+                    <div class="stat-label">Định dạng</div>
+                </div>
+            </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
-        <!-- Terminal Demo -->
-        <div class="terminal mb-12">
-            <div class="terminal-header p-3 flex items-center">
-                <div class="flex space-x-2 mr-4">
-                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                </div>
-                <div class="text-hacker-400 font-mono text-sm">
-                    hacker@terminal:~/api-docs$
-                </div>
-            </div>
-            <div class="terminal-body p-4 font-mono text-sm scrollbar-hacker">
-                <div class="command-line mb-2">
-                    <span class="prompt">$</span>
-                    <span class="typewriter">curl http://localhost:3636/api/heroes</span>
-                </div>
-                <pre class="text-hacker-300 mb-4">{
-  "success": true,
-  "data": [
-    {
-      "id": 1,
-      "name": "Cyber Ninja",
-      "class": "Stealth",
-      "level": 42,
-      "skills": ["Phantom Strike", "Data Drain", "Firewall Leap"]
-    },
-    {
-      "id": 2,
-      "name": "Binary Mage",
-      "class": "Caster", 
-      "level": 38,
-      "skills": ["Code Storm", "Hex Injection", "Stack Overflow"]
-    }
-  ]
-}</pre>
-
-                <div class="command-line mb-2">
-                    <span class="prompt">$</span>
-                    <span>curl http://localhost:3636/api/badges/search?q=thánh%20thuẫn</span>
-                </div>
-                <pre class="text-hacker-300 mb-4">{
-  "success": true,
-  "search_type": "skill",
-  "count": 1,
-  "data": [
-    {
-      "name": "Thánh thuẫn",
-      "type": "Phòng ngự",
-      "image": "https://lienquan.garena.vn/wp-content/uploads/2024/05/mowen_20303.png",
-      "description": "Sau khi chịu sát thương sẽ nhận được lá chắn và hút máu phép.",
-      "badge_name": "Tháp quang minh",
-      "group_id": "3"
-    }
-  ],
-  "author": "Nguyễn Quang Minh"
-}</pre>
-
-                <div class="command-line">
-                    <span class="prompt">$</span>
-                    <span class="cursor">_</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Endpoints Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Badges Section -->
-            <div class="endpoint-card bg-black p-6 rounded border-l-4 border-hacker-500">
-                <div class="flex items-center mb-4">
-                    <div class="bg-hacker-900 text-hacker-400 p-2 rounded mr-4">
-                        <i class="fas fa-id-badge"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-hacker-400 font-mono">PHÙ HIỆU</h2>
-                </div>
-
-                <div class="space-y-4">
-                    <div class="bg-hacker-900 rounded p-3">
-                        <div class="flex items-center">
-                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
-                            <span class="font-mono text-hacker-300">/api/badges</span>
-                        </div>
-                        <p class="mt-2 text-hacker-400 text-sm">Thông tin tất cả phù hiệu</p>
-                    </div>
-
-                    <div class="bg-hacker-900 rounded p-3">
-                        <div class="flex items-center">
-                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
-                            <span class="font-mono text-hacker-300">/api/badges/search?q={term}</span>
-                        </div>
-                        <p class="mt-2 text-hacker-400 text-sm">Tìm kiếm phù hiệu theo tên</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Heroes Section -->
-            <div class="endpoint-card bg-black p-6 rounded border-l-4 border-hacker-500">
-                <div class="flex items-center mb-4">
-                    <div class="bg-hacker-900 text-hacker-400 p-2 rounded mr-4">
-                        <i class="fas fa-user-ninja"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-hacker-400 font-mono">NHÂN VẬT</h2>
-                </div>
-
-                <div class="space-y-4">
-                    <div class="bg-hacker-900 rounded p-3">
-                        <div class="flex items-center">
-                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
-                            <span class="font-mono text-hacker-300">/api/heroes</span>
-                        </div>
-                        <p class="mt-2 text-hacker-400 text-sm">Danh sách tướng Liên Quân</p>
-                    </div>
-
-                    <div class="bg-hacker-900 rounded p-3">
-                        <div class="flex items-center">
-                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
-                            <span class="font-mono text-hacker-300">/api/heroes/search?q={term}</span>
-                        </div>
-                        <p class="mt-2 text-hacker-400 text-sm">Tìm thông tin tướng theo tên</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Equipments Section -->
-            <div class="endpoint-card bg-black p-6 rounded border-l-4 border-hacker-500">
-                <div class="flex items-center mb-4">
-                    <div class="bg-hacker-900 text-hacker-400 p-2 rounded mr-4">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-hacker-400 font-mono">TRANG BỊ</h2>
-                </div>
-
-                <div class="space-y-4">
-                    <div class="bg-hacker-900 rounded p-3">
-                        <div class="flex items-center">
-                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
-                            <span class="font-mono text-hacker-300">/api/equipments</span>
-                        </div>
-                        <p class="mt-2 text-hacker-400 text-sm">Danh sách tất cả trang bị</p>
-                    </div>
-
-                    <div class="bg-hacker-900 rounded p-3">
-                        <div class="flex items-center">
-                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
-                            <span class="font-mono text-hacker-300">/api/equipments/search?q={term}</span>
-                        </div>
-                        <p class="mt-2 text-hacker-400 text-sm">Tìm thông tin trang bị theo tên</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Runes Section -->
-            <div class="endpoint-card bg-black p-6 rounded border-l-4 border-hacker-500">
-                <div class="flex items-center mb-4">
-                    <div class="bg-hacker-900 text-hacker-400 p-2 rounded mr-4">
-                        <i class="fas fa-dice-d20"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-hacker-400 font-mono">NGỌC</h2>
-                </div>
-
-                <div class="space-y-4">
-                    <div class="bg-hacker-900 rounded p-3">
-                        <div class="flex items-center">
-                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
-                            <span class="font-mono text-hacker-300">/api/runes</span>
-                        </div>
-                        <p class="mt-2 text-hacker-400 text-sm">Danh sách tất cả các loại ngọc</p>
-                    </div>
-
-                    <div class="bg-hacker-900 rounded p-3">
-                        <div class="flex items-center">
-                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
-                            <span class="font-mono text-hacker-300">/api/runes/search?q={term}</span>
-                        </div>
-                        <p class="mt-2 text-hacker-400 text-sm">Tìm thông tin ngọc theo tên</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Spells Section -->
-            <div class="endpoint-card bg-black p-6 rounded border-l-4 border-hacker-500">
-                <div class="flex items-center mb-4">
-                    <div class="bg-hacker-900 text-hacker-400 p-2 rounded mr-4">
-                        <i class="fas fa-hat-wizard"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-hacker-400 font-mono">PHÉP BỔ TRỢ</h2>
-                </div>
-
-                <div class="space-y-4">
-                    <div class="bg-hacker-900 rounded p-3">
-                        <div class="flex items-center">
-                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
-                            <span class="font-mono text-hacker-300">/api/spells</span>
-                        </div>
-                        <p class="mt-2 text-hacker-400 text-sm">Danh sách tất cả các phép bổ trợ</p>
-                    </div>
-
-                    <div class="bg-hacker-900 rounded p-3">
-                        <div class="flex items-center">
-                            <span class="bg-hacker-600 text-black px-2 py-1 rounded text-xs font-bold mr-3 font-mono">GET</span>
-                            <span class="font-mono text-hacker-300">/api/spells/search?q={term}</span>
-                        </div>
-                        <p class="mt-2 text-hacker-400 text-sm">Tìm thông tin phép bổ trợ</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- API Status -->
-            <div class="endpoint-card bg-black p-6 rounded border-l-4 border-hacker-500">
-                <div class="flex items-center mb-4">
-                    <div class="bg-hacker-900 text-hacker-400 p-2 rounded mr-4">
-                        <i class="fas fa-server"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-hacker-400 font-mono">SYSTEM STATUS</h2>
-                </div>
-
-                <div class="space-y-4" id="system-status">
-                    <!-- Nội dung sẽ được cập nhật bằng JavaScript -->
-                    <div class="bg-hacker-900 rounded p-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-hacker-400 text-sm font-mono">API VERSION</span>
-                            <span class="font-mono text-hacker-300" id="api-version">v1.0.3</span>
-                        </div>
-                    </div>
-
-                    <div class="bg-hacker-900 rounded p-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-hacker-400 text-sm font-mono">UPTIME</span>
-                            <span class="font-mono text-hacker-300" id="uptime">Loading...</span>
-                        </div>
-                    </div>
-
-                    <div class="bg-hacker-900 rounded p-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-hacker-400 text-sm font-mono">RESPONSE TIME</span>
-                            <span class="font-mono text-hacker-300" id="response-time">~120ms</span>
-                        </div>
-                    </div>
-
-                    <div class="bg-hacker-900 rounded p-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-hacker-400 text-sm font-mono">REQUESTS TODAY</span>
-                            <span class="font-mono text-hacker-300" id="request-count">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-black py-8 mt-12 border-t border-hacker-800">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-4 md:mb-0">
-                    <h3 class="text-xl font-bold flex items-center font-mono">
-                        <span class="text-hacker-400 mr-2">$</span> HACKER API <span class="text-hacker-400 ml-2">_</span>
-                    </h3>
-                    <p class="text-hacker-600 text-sm font-mono">> System documentation v1.0.3</p>
-                </div>
-                <div class="flex space-x-6">
-                    <a href="https://github.com/nguynquminh" class="text-xl text-hacker-600 hover:text-hacker-400">
-                        <i class="fab fa-github"></i>
+    <div class="container">
+        <main>
+            <section>
+                <h2 class="section-title"><i class="fas fa-info-circle"></i> Giới thiệu</h2>
+                <p>API này cung cấp dữ liệu về các yếu tố trong game Liên Quân Mobile bao gồm tướng, trang bị, ngọc, phép bổ trợ và huy hiệu. Tất cả các endpoint đều trả về dữ liệu dưới dạng JSON.</p>
+                
+                <div class="tooltip" style="margin-top: 1rem;">
+                    <a href="/api/ping" class="try-it-btn" onclick="event.preventDefault(); testPing()">
+                        <i class="fas fa-bolt"></i> Kiểm tra API
                     </a>
-                    <a href="#" class="text-xl text-hacker-600 hover:text-hacker-400">
-                        <i class="fab fa-facebook"></i>
-                    </a>
-                    <a href="#" class="text-xl text-hacker-600 hover:text-hacker-400">
-                        <i class="fas fa-terminal"></i>
-                    </a>
+                    <span class="tooltiptext">Click để kiểm tra kết nối tới server</span>
                 </div>
-            </div>
-            <div class="mt-8 text-center text-hacker-600 text-xs font-mono">
-                <p>> Copyright © 2023 Hacker API. All systems operational. [OK]</p>
-            </div>
+                
+                <div class="loader" id="pingLoader"></div>
+                <pre class="response-box" id="pingResponse"></pre>
+            </section>
+
+            <section>
+                <h2 class="section-title"><i class="fas fa-list"></i> Danh sách Endpoints</h2>
+                
+                <div class="endpoints-grid">
+                    <!-- Badges -->
+                    <div class="endpoint-card">
+                        <span class="endpoint-method method-get">GET</span>
+                        <div class="endpoint-path">/api/badges</div>
+                        <p class="endpoint-description">Lấy tất cả huy hiệu trong game</p>
+                        <a href="/api/badges" class="try-it-btn" onclick="event.preventDefault(); tryEndpoint('/api/badges')">
+                            <i class="fas fa-play"></i> Thử ngay
+                        </a>
+                    </div>
+                    
+                    <div class="endpoint-card">
+                        <span class="endpoint-method method-get">GET</span>
+                        <div class="endpoint-path">/api/badges/search?q={term}</div>
+                        <p class="endpoint-description">Tìm kiếm huy hiệu theo tên hoặc kỹ năng</p>
+                        <a href="/api/badges/search" class="try-it-btn" onclick="event.preventDefault(); tryEndpointWithSearch('/api/badges/search')">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </a>
+                    </div>
+                    
+                    <!-- Heroes -->
+                    <div class="endpoint-card">
+                        <span class="endpoint-method method-get">GET</span>
+                        <div class="endpoint-path">/api/heroes</div>
+                        <p class="endpoint-description">Lấy tất cả tướng trong game</p>
+                        <a href="/api/heroes" class="try-it-btn" onclick="event.preventDefault(); tryEndpoint('/api/heroes')">
+                            <i class="fas fa-play"></i> Thử ngay
+                        </a>
+                    </div>
+                    
+                    <div class="endpoint-card">
+                        <span class="endpoint-method method-get">GET</span>
+                        <div class="endpoint-path">/api/heroes/search?q={term}</div>
+                        <p class="endpoint-description">Tìm kiếm tướng theo tên hoặc từ khóa</p>
+                        <a href="/api/heroes/search" class="try-it-btn" onclick="event.preventDefault(); tryEndpointWithSearch('/api/heroes/search')">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </a>
+                    </div>
+                    
+                    <!-- Equipments -->
+                    <div class="endpoint-card">
+                        <span class="endpoint-method method-get">GET</span>
+                        <div class="endpoint-path">/api/equipments</div>
+                        <p class="endpoint-description">Lấy tất cả trang bị trong game</p>
+                        <a href="/api/equipments" class="try-it-btn" onclick="event.preventDefault(); tryEndpoint('/api/equipments')">
+                            <i class="fas fa-play"></i> Thử ngay
+                        </a>
+                    </div>
+                    
+                    <div class="endpoint-card">
+                        <span class="endpoint-method method-get">GET</span>
+                        <div class="endpoint-path">/api/equipments/search?q={term}</div>
+                        <p class="endpoint-description">Tìm kiếm trang bị theo tên hoặc thuộc tính</p>
+                        <a href="/api/equipments/search" class="try-it-btn" onclick="event.preventDefault(); tryEndpointWithSearch('/api/equipments/search')">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </a>
+                    </div>
+                    
+                    <!-- Runes -->
+                    <div class="endpoint-card">
+                        <span class="endpoint-method method-get">GET</span>
+                        <div class="endpoint-path">/api/runes</div>
+                        <p class="endpoint-description">Lấy tất cả bảng ngọc trong game</p>
+                        <a href="/api/runes" class="try-it-btn" onclick="event.preventDefault(); tryEndpoint('/api/runes')">
+                            <i class="fas fa-play"></i> Thử ngay
+                        </a>
+                    </div>
+                    
+                    <div class="endpoint-card">
+                        <span class="endpoint-method method-get">GET</span>
+                        <div class="endpoint-path">/api/runes/search?q={term}</div>
+                        <p class="endpoint-description">Tìm kiếm bảng ngọc theo tên hoặc hiệu ứng</p>
+                        <a href="/api/runes/search" class="try-it-btn" onclick="event.preventDefault(); tryEndpointWithSearch('/api/runes/search')">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </a>
+                    </div>
+                    
+                    <!-- Spells -->
+                    <div class="endpoint-card">
+                        <span class="endpoint-method method-get">GET</span>
+                        <div class="endpoint-path">/api/spells</div>
+                        <p class="endpoint-description">Lấy tất cả phép bổ trợ trong game</p>
+                        <a href="/api/spells" class="try-it-btn" onclick="event.preventDefault(); tryEndpoint('/api/spells')">
+                            <i class="fas fa-play"></i> Thử ngay
+                        </a>
+                    </div>
+                    
+                    <div class="endpoint-card">
+                        <span class="endpoint-method method-get">GET</span>
+                        <div class="endpoint-path">/api/spells/search?q={term}</div>
+                        <p class="endpoint-description">Tìm kiếm phép bổ trợ theo tên</p>
+                        <a href="/api/spells/search" class="try-it-btn" onclick="event.preventDefault(); tryEndpointWithSearch('/api/spells/search')">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </a>
+                    </div>
+                    
+                    <!-- Gamemodes -->
+                    <div class="endpoint-card">
+                        <span class="endpoint-method method-get">GET</span>
+                        <div class="endpoint-path">/api/gamemodes</div>
+                        <p class="endpoint-description">Lấy tất cả các chế độ chơi trong game</p>
+                        <a href="/api/gamemodes" class="try-it-btn" onclick="event.preventDefault(); tryEndpoint('/api/gamemodes')">
+                            <i class="fas fa-server"></i> Kiểm tra
+                        </a>
+                    </div>
+
+                    <div class="endpoint-card">
+                        <span class="endpoint-method method-get">GET</span>
+                        <div class="endpoint-path">/api/gamemodes/search?q={term}</div>
+                        <p class="endpoint-description">Tìm kiếm phép chế độ chơi theo tên</p>
+                        <a href="/api/gamemodes/search" class="try-it-btn" onclick="event.preventDefault(); tryEndpointWithSearch('/api/gamemodes/search')">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </a>
+                    </div>
+                </div>
+            </section>
+            
+            <section>
+                <h2 class="section-title"><i class="fas fa-code"></i> Ví dụ sử dụng</h2>
+                <p>Dưới đây là một số ví dụ về cách sử dụng API này:</p>
+                
+                <div class="endpoint-card" style="margin-top: 1rem;">
+                    <h3 style="margin-bottom: 0.5rem; color: var(--accent-color);">JavaScript (Fetch API)</h3>
+                    <pre style="background-color: var(--light-gray); padding: 1rem; border-radius: 8px; overflow-x: auto;">
+<code>// Lấy danh sách tướng
+fetch('/api/heroes')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
+
+// Tìm kiếm trang bị
+fetch('/api/equipments/search?q=kiếm')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+                </div>
+                
+                <div class="endpoint-card" style="margin-top: 1rem;">
+                    <h3 style="margin-bottom: 0.5rem; color: var(--accent-color);">Python (Requests)</h3>
+                    <pre style="background-color: var(--light-gray); padding: 1rem; border-radius: 8px; overflow-x: auto;">
+<code>import requests
+
+# Lấy danh sách ngọc
+response = requests.get('http://your-domain.com/api/runes')
+data = response.json()
+print(data)
+
+# Tìm kiếm phép bổ trợ
+search_response = requests.get('http://your-domain.com/api/spells/search?q=trừng')
+search_data = search_response.json()
+print(search_data)</code></pre>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <div class="social-links">
+            <a href="https://facebook.com/nguynxquminh" class="social-link" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-facebook"></i>
+            </a>
+            <a href="https://www.instagram.com/nguynquminhh" class="social-link" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://github.com/nguynquminh" class="social-link" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-github"></i>
+            </a>
         </div>
+        <p>Made with <span class="heart">❤</span> by Nguyễn Quang Minh</p>
     </footer>
 
-    <script>
-        // Terminal typing effect
-        const commands = [
-            "curl http://localhost:3636/api/heroes/42",
-            "curl -X GET http://localhost:3636/api/spells/search?q=fire",
-            "fetch('/api/equipments').then(res => res.json())",
-            "npm install hacker-api-client",
-            "docker-compose up --build"
-        ];
-
-        let currentCommand = 0;
-        const terminalInput = document.querySelector('.terminal-body .command-line:last-child span:not(.prompt)');
-
-        function typeNextCommand() {
-            terminalInput.textContent = commands[currentCommand];
-            terminalInput.classList.add('typewriter');
-
-            setTimeout(() => {
-                terminalInput.classList.remove('typewriter');
-                terminalInput.textContent = '_';
-                currentCommand = (currentCommand + 1) % commands.length;
-                setTimeout(typeNextCommand, 2000);
-            }, 3500);
-        }
-
-        // Start the typing animation
-        setTimeout(typeNextCommand, 2000);
-
-        // Add blinking cursor
-        setInterval(() => {
-            if (terminalInput.textContent === '_') {
-                terminalInput.textContent = '';
-            } else {
-                terminalInput.textContent = '_';
-            }
-        }, 500);
-
-        // Make terminal draggable
-        const terminal = document.querySelector('.terminal');
-        let isDragging = false;
-        let offsetX, offsetY;
-
-        terminal.addEventListener('mousedown', (e) => {
-            if (e.target.tagName === 'SPAN' || e.target.tagName === 'PRE') return;
-
-            isDragging = true;
-            offsetX = e.clientX - terminal.getBoundingClientRect().left;
-            offsetY = e.clientY - terminal.getBoundingClientRect().top;
-            terminal.style.position = 'absolute';
-            terminal.style.cursor = 'grabbing';
-            document.body.style.userSelect = 'none';
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-
-            terminal.style.left = (e.clientX - offsetX) + 'px';
-            terminal.style.top = (e.clientY - offsetY) + 'px';
-        });
-
-        document.addEventListener('mouseup', () => {
-            isDragging = false;
-            terminal.style.cursor = 'default';
-            document.body.style.userSelect = '';
-        });
-
-        async function fetchSystemStatus() {
-            try {
-                const response = await fetch('/api/system-status');
-                const data = await response.json();
-
-                if (data.success) {
-                    document.getElementById('api-version').textContent = data.data.version;
-                    document.getElementById('uptime').textContent = data.data.uptime;
-                    document.getElementById('request-count').textContent = data.data.requestCount.toLocaleString();
-
-                    // Test response time
-                    const start = performance.now();
-                    await fetch('/api/system-status?ping=1');
-                    const duration = Math.round(performance.now() - start);
-                    document.getElementById('response-time').textContent = `~${duration}ms`;
-                }
-            } catch (error) {
-                console.error('Error fetching system status:', error);
-            }
-        }
-
-        // Cập nhật mỗi giây
-        fetchSystemStatus();
-        setInterval(fetchSystemStatus, 1000);
-
-    </script>
+    <script src="js/script.js"></script>
 </body>
-
 </html>
-<!-- End of HTML Document -->
