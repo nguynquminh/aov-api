@@ -2,17 +2,103 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
-let serverStartTime = new Date();
-let requestCount = 0;
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const morgan = require('morgan');
 
+// Khởi tạo app
 const app = express();
 const PORT = process.env.PORT || 3636;
 const author = 'Nguyễn Quang Minh';
 
+// Cấu hình rate limiting (60 requests/phút)
+const limiter = rateLimit({
+    windowMs: 60 * 1000, // 1 phút
+    max: 60, // giới hạn 60 requests
+    message: {
+        success: false,
+        message: 'Quá nhiều request từ IP này, vui lòng thử lại sau 1 phút',
+        author: author
+    },
+    skip: (req) => req.url === '/api/system-status/ping' // Bỏ qua endpoint ping
+});
+
+// Middleware
+app.use(cors());
+app.use(helmet());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(limiter);
+
+// Custom logging middleware
+const requestStats = {
+    count: 0,
+    requests: [],
+    lastReset: new Date().toISOString(),
+    trackedIPs: {} // Theo dõi IP đã log để tránh log liên tục
+};
+
+const shouldLogRequest = (ip) => {
+    const now = Date.now();
+    const threshold = 5000; // 5 giây
+    const lastRequest = requestStats.trackedIPs[ip];
+
+    if (!lastRequest || (now - lastRequest) > threshold) {
+        requestStats.trackedIPs[ip] = now;
+        return true;
+    }
+    return false;
+};
+
+app.use((req, res, next) => {
+    const clientIP = req.headers['x-forwarded-for'] || req.ip || req.connection.remoteAddress;
+
+    requestStats.count++;
+
+    if (shouldLogRequest(clientIP)) {
+        if (requestStats.requests.length >= 100) {
+            requestStats.requests.shift();
+        }
+
+        requestStats.requests.push({
+            ip: clientIP,
+            method: req.method,
+            url: req.url,
+            timestamp: new Date().toISOString()
+        });
+
+        console.log(`[#${requestStats.count}] ${new Date().toLocaleString()} | IP: ${clientIP} | ${req.method} ${req.url}`);
+    }
+
+    next();
+});
+
+// Load dữ liệu
+const DATA_DIR = path.join(__dirname, 'data');
+
+const loadJsonData = (filename) => {
+    try {
+        const filePath = path.join(DATA_DIR, filename);
+        const rawData = fs.readFileSync(filePath);
+        return JSON.parse(rawData);
+    } catch (error) {
+        console.error(`Error loading ${filename}:`, error);
+        return null;
+    }
+};
+
+const badgesData = loadJsonData('badges.json') || [];
+const equipmentsData = loadJsonData('equipments.json') || [];
+const heroesData = loadJsonData('heroes.json') || [];
+const runesData = loadJsonData('runes.json') || [];
+const spellsData = loadJsonData('spells.json') || [];
+const gamemodeData = loadJsonData('gamemodes.json') || [];
+
+// API Documentation
 const API_DOCS = {
     title: "Liên Quân Mobile API",
     description: "API cung cấp dữ liệu về Liên Quân Mobile",
-    version: "1.0.0",
+    version: "1.0.3", // Cập nhật version để khớp với HTML
     author: author,
     endpoints: [{
             method: 'GET',
@@ -66,35 +152,23 @@ const API_DOCS = {
         },
         {
             method: 'GET',
-            path: '/api/system-status',
+            path: '/api/ping',
             description: 'Xem trạng thái hệ thống'
+        },
+        {
+            method: 'GET',
+            path: '/api/gamemodes',
+            description: 'Lấy tất cả chế độ chơi'
+        },
+        {
+            method: 'GET',
+            path: '/api/gamemodes/search?q={term}',
+            description: 'Tìm kiếm chế độ chơi'
         }
     ]
 };
 
-app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
-
-const DATA_DIR = path.join(__dirname, 'data');
-
-const loadJsonData = (filename) => {
-    try {
-        const filePath = path.join(DATA_DIR, filename);
-        const rawData = fs.readFileSync(filePath);
-        return JSON.parse(rawData);
-    } catch (error) {
-        console.error(`Error loading ${filename}:`, error);
-        return null;
-    }
-};
-
-const badgesData = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'badges.json')) || []);
-const equipmentsData = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'equipments.json'))) || [];
-const heroesData = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'heroes.json'))) || [];
-const runesData = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'runes.json'))) || [];
-const spellsData = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'spells.json'))) || [];
-
+// API Routes
 app.get('/api/badges', (req, res) => {
     try {
         res.json({
@@ -155,15 +229,13 @@ app.get('/api/badges/search', (req, res) => {
             results = matchedSkills;
         }
 
-        const response = {
+        res.json({
             success: true,
             search_type: responseType,
             count: results.length,
             data: results,
             author: author
-        };
-
-        res.json(response);
+        });
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -373,25 +445,74 @@ app.get('/api/spells/search', (req, res) => {
     }
 });
 
-app.use((req, res, next) => {
-    requestCount++;
-    next();
+app.get('/api/gamemodes', (req, res) => {
+    try {
+        res.json({
+            success: true,
+            count: gamemodeData.length,
+            data: gamemodeData,
+            author: author
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching gamemode',
+            author: author
+        });
+    }
 });
 
-app.get('/api/system-status', (req, res) => {
-    const uptime = process.uptime();
+app.get('/api/gamemode/search', (req, res) => {
+    try {
+        const searchTerm = req.query.q;
+        if (!searchTerm) {
+            return res.status(400).json({
+                success: false,
+                message: 'Search term (q) is required',
+                author: author
+            });
+        }
+
+        const term = searchTerm.toLowerCase();
+        const results = gamemodeData.filter(gamemode => {
+            const name = gamemode.name?.toLowerCase() || '';
+            const rules = gamemode.rules?.toLowerCase() || '';
+            const descriptionText = Array.isArray(gamemode.description)
+                ? gamemode.description.join(' ').toLowerCase()
+                : gamemode.description?.toLowerCase() || '';
+
+            return name.includes(term) || rules.includes(term) || descriptionText.includes(term);
+        });
+
+        res.json({
+            success: true,
+            count: results.length,
+            data: results,
+            author: author
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error searching gamemodes',
+            author: author
+        });
+    }
+});
+
+app.get('/api', (req, res) => {
+    res.json(API_DOCS);
+});
+
+app.get('/api/ping', (req, res) => {
     res.json({
         success: true,
-        data: {
-            version: API_DOCS.version,
-            uptime: formatUptime(uptime),
-            requestCount,
-            serverStartTime,
-            status: 'running'
-        }
+        ping: 'pong',
+        timestamp: new Date().toISOString(),
+        author: author
     });
 });
 
+// Helper functions
 function formatUptime(seconds) {
     const days = Math.floor(seconds / (3600 * 24));
     seconds %= 3600 * 24;
@@ -403,16 +524,28 @@ function formatUptime(seconds) {
     return `${days}d ${hours}h ${minutes}m ${seconds}s`;
 }
 
-app.get('/api/system-status/ping', (req, res) => {
-    res.json({
-        success: true,
-        ping: 'pong'
-    });
-});
+// Setup daily reset
+function setupDailyReset() {
+    const now = new Date();
+    const nextMidnight = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1,
+        0, 0, 0
+    );
 
-setInterval(() => {
-    requestCount = 0;
-}, 24 * 60 * 60 * 1000);
+    setTimeout(() => {
+        requestStats.count = 0;
+        requestStats.requests = [];
+        requestStats.lastReset = new Date().toISOString();
+        requestStats.trackedIPs = {};
+        console.log('🔄 Đã reset request counter');
+        setupDailyReset();
+    }, nextMidnight - now);
+}
+
+// Khởi động server
+setupDailyReset();
 
 app.get('/api', (req, res) => {
   res.json({
@@ -427,17 +560,17 @@ app.get('/', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-    console.log('Available endpoints:');
-    console.log(`Homepage: http://localhost:${PORT}/index.html`);
-    console.log('- GET /api/badges');
-    console.log('- GET /api/badges/search?q={term}');
-    console.log('- GET /api/heroes');
-    console.log('- GET /api/heroes/search?q={term}');
-    console.log('- GET /api/equipments');
-    console.log('- GET /api/equipments/search?q={term}');
-    console.log('- GET /api/runes');
-    console.log('- GET /api/runes/search?q={term}');
-    console.log('- GET /api/spells');
-    console.log('- GET /api/spells/search?q={term}');
+    console.log(`\n╔════════════════════════════════════════╗`);
+    console.log(`║ 🚀 Server đã khởi động trên port ${PORT}    ║`);
+    console.log(`║ 🌐 Truy cập: http://localhost:${PORT}      ║`);
+    console.log(`╚════════════════════════════════════════╝\n`);
+    console.log('📌 Các endpoints chính:');
+    console.log('├─ /api/badges          - Lấy danh sách phù hiệu');
+    console.log('├─ /api/heroes          - Lấy danh sách tướng');
+    console.log('├─ /api/equipments      - Lấy danh sách trang bị');
+    console.log('├─ /api/runes           - Lấy danh sách ngọc');
+    console.log('├─ /api/spells          - Lấy danh sách phép bổ trợ');
+    console.log('└─ /api/gamemodes       - Lấy danh sách các chế độ chơi\n');
+    console.log('🔒 Rate limit: 60 requests/phút');
+    console.log('📊 Logging IP: Bật (không log liên tục)');
 });
