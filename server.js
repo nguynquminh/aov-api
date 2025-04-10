@@ -11,6 +11,9 @@ const app = express();
 const PORT = process.env.PORT || 3636;
 const author = 'Nguyễn Quang Minh';
 
+// Cấu hình trust proxy để xử lý X-Forwarded-For header chính xác
+app.set('trust proxy', true);
+
 // Cấu hình rate limiting (60 requests/phút)
 const limiter = rateLimit({
     windowMs: 60 * 1000, // 1 phút
@@ -477,9 +480,9 @@ app.get('/api/gamemode/search', (req, res) => {
         const results = gamemodeData.filter(gamemode => {
             const name = gamemode.name?.toLowerCase() || '';
             const rules = gamemode.rules?.toLowerCase() || '';
-            const descriptionText = Array.isArray(gamemode.description)
-                ? gamemode.description.join(' ').toLowerCase()
-                : gamemode.description?.toLowerCase() || '';
+            const descriptionText = Array.isArray(gamemode.description) ?
+                gamemode.description.join(' ').toLowerCase() :
+                gamemode.description?.toLowerCase() || '';
 
             return name.includes(term) || rules.includes(term) || descriptionText.includes(term);
         });
@@ -548,11 +551,11 @@ function setupDailyReset() {
 setupDailyReset();
 
 app.get('/api', (req, res) => {
-  res.json({
-    ...API_DOCS,
-    status: 'running',
-    serverTime: new Date().toISOString()
-  });
+    res.json({
+        ...API_DOCS,
+        status: 'running',
+        serverTime: new Date().toISOString()
+    });
 });
 
 app.get('/', (req, res) => {
